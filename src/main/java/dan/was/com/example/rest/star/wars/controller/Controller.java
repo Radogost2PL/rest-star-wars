@@ -3,8 +3,10 @@ package dan.was.com.example.rest.star.wars.controller;
 
 import dan.was.com.example.rest.star.wars.dto.PersonsList;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonResponse;
+import dan.was.com.example.rest.star.wars.responsemodel.PersonsListResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.RestResponse;
 import dan.was.com.example.rest.star.wars.service.ConvertPersonDataService;
+import dan.was.com.example.rest.star.wars.service.ConvertToPersonsListService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,18 +29,18 @@ public class Controller {
     private WebClient.Builder webClientBuilder;
     @Autowired
     private ConvertPersonDataService convertPersonData;
+    @Autowired
+    private ConvertToPersonsListService convertToPersonsListService;
 
     @GetMapping("/characters/page={id}")
-    public PersonsList getAllCharactersFromPage(@PathVariable("id") Integer id) {
-        return webClientBuilder.build()
-                .get()
+    public PersonsListResponse getAllCharactersFromPage(@PathVariable("id") Integer id) {
 
-                .uri(ALL_PEOPLE_URL_PAGE + id)
-                .retrieve()
+        String pageUri = ALL_PEOPLE_URL_PAGE + id;
+//        PersonsListResponse personsListResponse = new PersonsListResponse();
+        PersonsListResponse  personsListResponse = convertToPersonsListService.convertToPersonsListResponse(pageUri);
 
-                .bodyToMono(PersonsList.class)
-                .block();
 
+        return personsListResponse;
     }
 
 

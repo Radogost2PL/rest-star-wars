@@ -16,29 +16,20 @@ import java.util.List;
 public class PersonResponse extends RestResponse {
     @JsonIgnore
     private String message;
+
     private int id;
     private String name;
-    private String birth_year;
-    private String eye_color;
-    private String gender;
-    private String hair_color;
     private String height;
     private String mass;
+    private String hair_color;
     private String skin_color;
+    private String eye_color;
+    private String birth_year;
+    private String gender;
     private Planet homeworld;
-    private List<Starship> starshipList;
+    private List<Starship> starships;
 
-    public PersonResponse(int id,
-                          String name,
-                          String birth_year,
-                          String eye_color,
-                          String gender,
-                          String hair_color,
-                          String height,
-                          String mass,
-                          String skin_color,
-                          Planet homeworld,
-                          List<Starship> starshipList) {
+    public PersonResponse(int id, String name, String birth_year, String eye_color, String gender, String hair_color, String height, String mass, String skin_color, Planet homeworld, List<Starship> starships) {
         this.id = id;
         this.name = name;
         this.birth_year = birth_year;
@@ -49,7 +40,7 @@ public class PersonResponse extends RestResponse {
         this.mass = mass;
         this.skin_color = skin_color;
         this.homeworld = homeworld;
-        this.starshipList = starshipList;
+        this.starships = starships;
     }
 }
 

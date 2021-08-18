@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 
 public class Person {
-
+    private int id;
     private String name;
     private String birth_year;
     private String eye_color;

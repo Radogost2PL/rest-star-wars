@@ -71,6 +71,7 @@ public class ConvertPersonDataService {
         String charactersHomeworldUri = person.getHomeworld();
         System.out.println(charactersHomeworldUri);
 
+        System.out.println("!!!!!! ID Z CPDS " + person.getId());
         Planet charactersHomeworld = getHomeworld(charactersHomeworldUri);
 
         List<String> charactersStarshipsUriList = Arrays.asList(person.getStarships());
