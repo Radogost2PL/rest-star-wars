@@ -10,11 +10,17 @@ import dan.was.com.example.rest.star.wars.service.ConvertToPersonsListService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.List;
 
 @EnableWebMvc
 @RestController
@@ -32,13 +38,15 @@ public class Controller {
     @Autowired
     private ConvertToPersonsListService convertToPersonsListService;
 
+
     @GetMapping("/characters/page={id}")
     public PersonsListResponse getAllCharactersFromPage(@PathVariable("id") Integer id) {
 
         String pageUri = ALL_PEOPLE_URL_PAGE + id;
 //        PersonsListResponse personsListResponse = new PersonsListResponse();
-        PersonsListResponse  personsListResponse = convertToPersonsListService.convertToPersonsListResponse(pageUri);
+        PersonsListResponse personsListResponse = convertToPersonsListService.convertToPersonsListResponse(pageUri);
 
+//Pageable pageable = PageRequest.of(1,9);
 
         return personsListResponse;
     }
