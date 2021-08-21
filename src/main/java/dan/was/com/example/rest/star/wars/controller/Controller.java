@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -39,14 +40,13 @@ public class Controller {
     private ConvertToPersonsListService convertToPersonsListService;
 
 
-    @GetMapping("/characters/page={id}")
-    public PersonsListResponse getAllCharactersFromPage(@PathVariable("id") Integer id) {
+    @GetMapping("/characters")
+    public PersonsListResponse getAllCharactersFromPage(@RequestParam("page") int page) {
 
-        String pageUri = ALL_PEOPLE_URL_PAGE + id;
+//        String pageUri = ALL_PEOPLE_URL_PAGE + id;
 //        PersonsListResponse personsListResponse = new PersonsListResponse();
-        PersonsListResponse personsListResponse = convertToPersonsListService.convertToPersonsListResponse(pageUri);
+        PersonsListResponse personsListResponse = convertToPersonsListService.convertToPersonsListResponse(page);
 
-//Pageable pageable = PageRequest.of(1,9);
 
         return personsListResponse;
     }

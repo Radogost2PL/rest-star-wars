@@ -41,10 +41,10 @@ public class ConvertPersonDataService {
         return planet;
     }
 
-    public List<Starship> getCharactersStarships(List<String> starshipsUriList) {
+    public List<Starship> getCharactersStarships(String [] starshipsUriList) {
         List<Starship> starshipsList = new ArrayList<>();
 
-        starshipsUriList.forEach(i ->
+        Arrays.stream(starshipsUriList).forEach(i ->
 
                 {
                     Starship starship = webClientBuilder.build().get().uri(i).retrieve().bodyToMono(Starship.class).block();
@@ -74,10 +74,9 @@ public class ConvertPersonDataService {
         System.out.println("!!!!!! ID Z CPDS " + person.getId());
         Planet charactersHomeworld = getHomeworld(charactersHomeworldUri);
 
-        List<String> charactersStarshipsUriList = Arrays.asList(person.getStarships());
-        System.out.println(charactersStarshipsUriList);
 
-        List<Starship> charactersStarshipsList = getCharactersStarships(charactersStarshipsUriList);
+
+        List<Starship> charactersStarshipsList = getCharactersStarships(person.getStarships());
 
         PersonResponse personResponse = new PersonResponse(id, person.getName(),
                 person.getBirth_year(),
