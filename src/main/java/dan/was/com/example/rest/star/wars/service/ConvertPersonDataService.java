@@ -3,10 +3,13 @@ package dan.was.com.example.rest.star.wars.service;
 import dan.was.com.example.rest.star.wars.dto.Person;
 import dan.was.com.example.rest.star.wars.dto.Planet;
 import dan.was.com.example.rest.star.wars.dto.Starship;
+import dan.was.com.example.rest.star.wars.responsemodel.HomeworldResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonResponse;
+import dan.was.com.example.rest.star.wars.responsemodel.StarshipResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service("CharacterConvertService")
 public class ConvertPersonDataService {
@@ -23,12 +27,18 @@ public class ConvertPersonDataService {
 
     private static Logger LOGGER = LogManager.getLogger(ConvertPersonDataService.class);
 
-    private final String ALL_PEOPLE_URL = "https://swapi.dev/api/people/";
-    private final String ALL_PLANETS_URL = "https://swapi.dev/api/planets/";
+    //    @Value("${rest.url.allPeople}")
+    private String BASE_URL = "https://swapi.dev/api";
+    private String ALL_PEOPLE_URL = "/people/{id}";
+
+    //    @Value("${rest.url.allPlanets}")
+    private String ALL_PLANETS_URL = "/planets";
 
 
-    public Planet getHomeworld(String planetUri) {
-        Planet planet = webClientBuilder.
+    public HomeworldResponse getHomeworld(String planetUri) {
+
+
+        return convertPlanetToHomeworldResponse(Objects.requireNonNull(webClientBuilder.
                 build().
                 get().
                 uri(planetUri).
@@ -36,33 +46,73 @@ public class ConvertPersonDataService {
                 onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("Resource not found"))).
                 onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is dead"))).
                 bodyToMono(Planet.class).
-                block();
-        LOGGER.info("homeworld: " + planet.toString());
-        return planet;
+                block()));
     }
 
-    public List<Starship> getCharactersStarships(String [] starshipsUriList) {
-        List<Starship> starshipsList = new ArrayList<>();
+    public HomeworldResponse convertPlanetToHomeworldResponse(Planet planet) {
+        HomeworldResponse homeworldResponse = new HomeworldResponse(planet.getName(),
+                planet.getRotation_period(),
+                planet.getOrbital_period(),
+                planet.getDiameter(),
+                planet.getClimate(),
+                planet.getGravity(),
+                planet.getTerrain(),
+                planet.getSurface_water(),
+                planet.getPopulation());
+
+        return homeworldResponse;
+    }
+
+    public StarshipResponse convertStarshipToStarshipResponse(Starship starship) {
+        StarshipResponse starshipResponse = new StarshipResponse(starship.getName(),
+                starship.getModel(),
+                starship.getManufacturer(),
+                starship.getCost_in_credits(),
+                starship.getLength(),
+                starship.getMax_atmosphering_speed(),
+                starship.getCrew(),
+                starship.getPassengers(),
+                starship.getCargo_capacity(),
+                starship.getConsumables(),
+                starship.getHyperdrive_rating(),
+                starship.getMglt(),
+                starship.getStarship_class());
+        return starshipResponse;
+
+    }
+
+
+    public List<StarshipResponse> getCharactersStarships(String[] starshipsUriList) {
+        List<StarshipResponse> starshipsResponseList = new ArrayList<>();
 
         Arrays.stream(starshipsUriList).forEach(i ->
-
                 {
                     Starship starship = webClientBuilder.build().get().uri(i).retrieve().bodyToMono(Starship.class).block();
-                    starshipsList.add(starship);
+
+                    StarshipResponse starshipResponse = convertStarshipToStarshipResponse(Objects.
+                            requireNonNull(webClientBuilder.
+                                    build().
+                                    get().
+                                    uri(i).
+                                    retrieve().
+                                    bodyToMono(Starship.class).
+                                    block()));
+
+                    starshipsResponseList.add(starshipResponse);
                 }
         );
-        LOGGER.info("Starships list: " + starshipsList);
+        LOGGER.info("Starships list: " + starshipsResponseList);
 
-        return starshipsList;
+        return starshipsResponseList;
     }
 
 
-    public PersonResponse convertPerson(String characterUri, int id) {
+    public PersonResponse convertPerson(int id) {
 
         Person person = webClientBuilder.
                 build().
                 get().
-                uri(characterUri).
+                uri(BASE_URL, uriBuilder -> uriBuilder.path(ALL_PEOPLE_URL).build(id)).
                 retrieve().
                 onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("Resource not found"))).
                 onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new Exception("Server is dead"))).
@@ -72,11 +122,11 @@ public class ConvertPersonDataService {
         System.out.println(charactersHomeworldUri);
 
         System.out.println("!!!!!! ID Z CPDS " + person.getId());
-        Planet charactersHomeworld = getHomeworld(charactersHomeworldUri);
+        HomeworldResponse charactersHomeworld = getHomeworld(charactersHomeworldUri);
 
 
-
-        List<Starship> charactersStarshipsList = getCharactersStarships(person.getStarships());
+//        List<Starship> charactersStarshipsList = getCharactersStarships(person.getStarships());
+        List<StarshipResponse> charactersStarshipsList = getCharactersStarships(person.getStarships());
 
         PersonResponse personResponse = new PersonResponse(id, person.getName(),
                 person.getBirth_year(),
@@ -86,7 +136,8 @@ public class ConvertPersonDataService {
                 person.getHeight(),
                 person.getMass(),
                 person.getSkin_color(),
-                charactersHomeworld, charactersStarshipsList);
+                getHomeworld(charactersHomeworldUri),
+                getCharactersStarships(person.getStarships()));
 
         return personResponse;
     }

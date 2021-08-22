@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class StarshipsResponse {
+public class StarshipResponse {
 
     private String name;
     private String model;

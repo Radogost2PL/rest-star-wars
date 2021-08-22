@@ -15,6 +15,7 @@ public class ExceptionResolver {
 
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+
     public NotFoundExceptionModel noHandlerFoundException(NoHandlerFoundException e, WebRequest request) {
         NotFoundExceptionModel notFoundExceptionModel = new NotFoundExceptionModel();
         notFoundExceptionModel.setStatus("404");
