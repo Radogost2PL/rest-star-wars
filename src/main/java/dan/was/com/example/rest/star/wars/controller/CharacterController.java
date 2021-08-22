@@ -2,6 +2,7 @@ package dan.was.com.example.rest.star.wars.controller;
 
 
 import dan.was.com.example.rest.star.wars.dto.PersonsList;
+import dan.was.com.example.rest.star.wars.exceptions.OutOfBoundException;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonsListResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.RestResponse;
@@ -41,12 +42,16 @@ public class Controller {
 
 
     @GetMapping("/characters")
-    public PersonsListResponse getAllCharactersFromPage(@RequestParam("page") int page) {
+    public RestResponse getAllCharactersFromPage(@RequestParam(value = "page", defaultValue = "1") int page) throws OutOfBoundException {
 
-//        String pageUri = ALL_PEOPLE_URL_PAGE + id;
-//        PersonsListResponse personsListResponse = new PersonsListResponse();
-        PersonsListResponse personsListResponse = convertToPersonsListService.convertToPersonsListResponse(page);
-
+        PersonsListResponse personsListResponse = new PersonsListResponse();
+        try {
+             personsListResponse = convertToPersonsListService.convertToPersonsListResponse(page);
+        }catch (Exception e){
+            RestResponse restResponse = new RestResponse();
+            restResponse.setMessage(e.getMessage());
+            return restResponse;
+        }
 
         return personsListResponse;
     }
