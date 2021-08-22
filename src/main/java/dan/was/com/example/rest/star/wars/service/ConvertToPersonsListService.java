@@ -5,7 +5,6 @@ import dan.was.com.example.rest.star.wars.exceptions.OutOfBoundException;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonsListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -39,7 +38,6 @@ public class ConvertToPersonsListService {
 
         List<PersonResponse> personResponsesList = new ArrayList<>();
 
-
         switch (pageNumber) {
             case 1:
                 idCounter = 0;
@@ -70,13 +68,9 @@ public class ConvertToPersonsListService {
                 break;
         }
 
-
         personsList.getResults().forEach(person -> {
-//            if (idCounter != 17) {
                 idCounter = idCounter + 1;
-//            } else if (idCounter == 17) {
-//                idCounter = idCounter + 2
-//            }
+
             PersonResponse personResponse = new PersonResponse(idCounter, person.getName(),
                     person.getBirth_year(),
                     person.getEye_color(),

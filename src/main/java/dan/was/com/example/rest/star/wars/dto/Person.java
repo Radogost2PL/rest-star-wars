@@ -21,14 +21,11 @@ public class Person {
     private String mass;
     private String skin_color;
     private String homeworld;
-
     @JsonIgnore
     private String[] films;
     @JsonIgnore
     private String[] species;
-
     private String[] starships;
-
     private String[] vehicles;
     @JsonIgnore
     private String url;

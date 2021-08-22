@@ -9,7 +9,6 @@ import dan.was.com.example.rest.star.wars.responsemodel.StarshipResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,8 +35,6 @@ public class ConvertPersonDataService {
 
 
     public HomeworldResponse getHomeworld(String planetUri) {
-
-
         return convertPlanetToHomeworldResponse(Objects.requireNonNull(webClientBuilder.
                 build().
                 get().
@@ -81,14 +78,11 @@ public class ConvertPersonDataService {
 
     }
 
-
     public List<StarshipResponse> getCharactersStarships(String[] starshipsUriList) {
         List<StarshipResponse> starshipsResponseList = new ArrayList<>();
 
         Arrays.stream(starshipsUriList).forEach(i ->
                 {
-                    Starship starship = webClientBuilder.build().get().uri(i).retrieve().bodyToMono(Starship.class).block();
-
                     StarshipResponse starshipResponse = convertStarshipToStarshipResponse(Objects.
                             requireNonNull(webClientBuilder.
                                     build().
@@ -106,7 +100,6 @@ public class ConvertPersonDataService {
         return starshipsResponseList;
     }
 
-
     public PersonResponse convertPerson(int id) {
 
         Person person = webClientBuilder.
@@ -119,14 +112,6 @@ public class ConvertPersonDataService {
                 bodyToMono(Person.class).block();
 
         String charactersHomeworldUri = person.getHomeworld();
-        System.out.println(charactersHomeworldUri);
-
-        System.out.println("!!!!!! ID Z CPDS " + person.getId());
-        HomeworldResponse charactersHomeworld = getHomeworld(charactersHomeworldUri);
-
-
-//        List<Starship> charactersStarshipsList = getCharactersStarships(person.getStarships());
-        List<StarshipResponse> charactersStarshipsList = getCharactersStarships(person.getStarships());
 
         PersonResponse personResponse = new PersonResponse(id, person.getName(),
                 person.getBirth_year(),

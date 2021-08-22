@@ -24,8 +24,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class CharacterController {
     private static Logger LOGGER = LogManager.getLogger(CharacterController.class);
 
-
-    private final WebClient.Builder webClientBuilder;
+//    private final WebClient.Builder webClientBuilder;
     private final ConvertPersonDataService convertPersonData;
     private final ConvertToPersonsListService convertToPersonsListService;
 
@@ -44,7 +43,6 @@ public class CharacterController {
 
         return personsListResponse;
     }
-
 
     @GetMapping("/characters/{id}")
     public RestResponse getCharacterById(@PathVariable("id") int id) {
