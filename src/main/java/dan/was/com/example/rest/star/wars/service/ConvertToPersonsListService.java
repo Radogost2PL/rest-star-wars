@@ -25,8 +25,7 @@ public class ConvertToPersonsListService {
 
     public PersonsListResponse convertToPersonsListResponse(int pageNumber) {
         if (pageNumber < 1 || pageNumber > 9) {
-            OutOfBoundException outOfBoundException = new OutOfBoundException("pages 1-9 only");
-            throw outOfBoundException;
+            throw new OutOfBoundException("pages 1-9 only");
         }
 
         PersonsList personsList = webClientBuilder.build()
@@ -86,8 +85,6 @@ public class ConvertToPersonsListService {
 
         });
 
-        PersonsListResponse personsListResponse = new PersonsListResponse(9, personsList.getCount(), personResponsesList);
-
-        return personsListResponse;
+        return new PersonsListResponse(9, personsList.getCount(), personResponsesList);
     }
 }

@@ -47,7 +47,8 @@ public class ConvertPersonDataService {
     }
 
     public HomeworldResponse convertPlanetToHomeworldResponse(Planet planet) {
-        HomeworldResponse homeworldResponse = new HomeworldResponse(planet.getName(),
+
+        return new HomeworldResponse(planet.getName(),
                 planet.getRotation_period(),
                 planet.getOrbital_period(),
                 planet.getDiameter(),
@@ -56,12 +57,10 @@ public class ConvertPersonDataService {
                 planet.getTerrain(),
                 planet.getSurface_water(),
                 planet.getPopulation());
-
-        return homeworldResponse;
     }
 
     public StarshipResponse convertStarshipToStarshipResponse(Starship starship) {
-        StarshipResponse starshipResponse = new StarshipResponse(starship.getName(),
+        return new StarshipResponse(starship.getName(),
                 starship.getModel(),
                 starship.getManufacturer(),
                 starship.getCost_in_credits(),
@@ -74,7 +73,6 @@ public class ConvertPersonDataService {
                 starship.getHyperdrive_rating(),
                 starship.getMglt(),
                 starship.getStarship_class());
-        return starshipResponse;
 
     }
 
@@ -113,7 +111,7 @@ public class ConvertPersonDataService {
 
         String charactersHomeworldUri = person.getHomeworld();
 
-        PersonResponse personResponse = new PersonResponse(id, person.getName(),
+        return new PersonResponse(id, person.getName(),
                 person.getBirth_year(),
                 person.getEye_color(),
                 person.getGender(),
@@ -123,7 +121,5 @@ public class ConvertPersonDataService {
                 person.getSkin_color(),
                 getHomeworld(charactersHomeworldUri),
                 getCharactersStarships(person.getStarships()));
-
-        return personResponse;
     }
 }
