@@ -24,7 +24,7 @@ public class ConvertPersonDataService {
     @Autowired
     private WebClient.Builder webClientBuilder;
 
-    private static Logger LOGGER = LogManager.getLogger(ConvertPersonDataService.class);
+    private static final Logger LOGGER = LogManager.getLogger(ConvertPersonDataService.class);
 
     //    @Value("${rest.url.allPeople}")
     private String BASE_URL = "https://swapi.dev/api";

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebMvc
@@ -24,9 +23,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class CharacterController {
     private static Logger LOGGER = LogManager.getLogger(CharacterController.class);
 
-//    private final WebClient.Builder webClientBuilder;
-    private final ConvertPersonDataService convertPersonData;
-    private final ConvertToPersonsListService convertToPersonsListService;
+    @Autowired
+    private ConvertPersonDataService convertPersonData;
+    @Autowired
+    private ConvertToPersonsListService convertToPersonsListService;
 
 
     @GetMapping("/characters")
