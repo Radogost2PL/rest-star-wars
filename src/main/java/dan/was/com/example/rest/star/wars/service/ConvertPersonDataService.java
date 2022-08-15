@@ -3,12 +3,15 @@ package dan.was.com.example.rest.star.wars.service;
 import dan.was.com.example.rest.star.wars.dto.Person;
 import dan.was.com.example.rest.star.wars.dto.Planet;
 import dan.was.com.example.rest.star.wars.dto.Starship;
+import dan.was.com.example.rest.star.wars.exceptions.remote.ResourceNotFoundExceptions;
+import dan.was.com.example.rest.star.wars.exceptions.remote.InternalErrorException;
 import dan.was.com.example.rest.star.wars.responsemodel.HomeworldResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.StarshipResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,13 +29,11 @@ public class ConvertPersonDataService {
 
     private static final Logger LOGGER = LogManager.getLogger(ConvertPersonDataService.class);
 
-    //    @Value("${rest.url.allPeople}")
-    private String BASE_URL = "https://swapi.dev/api";
-    private String ALL_PEOPLE_URL = "/people/{id}";
 
-    //    @Value("${rest.url.allPlanets}")
-    private String ALL_PLANETS_URL = "/planets";
-
+    @Value("${rest.url.swapi}")
+    private String BASE_URL;
+    @Value("${rest.url.allPeople}")
+    private String ALL_PEOPLE_URL;
 
     public HomeworldResponse getHomeworld(String planetUri) {
         return convertPlanetToHomeworldResponse(Objects.requireNonNull(webClientBuilder.
@@ -98,15 +99,15 @@ public class ConvertPersonDataService {
         return starshipsResponseList;
     }
 
-    public PersonResponse convertPerson(int id) {
+    public PersonResponse convertPerson(int id) throws ResourceNotFoundExceptions {
 
         Person person = webClientBuilder.
                 build().
                 get().
                 uri(BASE_URL, uriBuilder -> uriBuilder.path(ALL_PEOPLE_URL).build(id)).
                 retrieve().
-                onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("Resource not found"))).
-                onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new Exception("Server is dead"))).
+                onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new ResourceNotFoundExceptions("Remote resource not found"))).
+                onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new InternalErrorException("Remote server internal error"))).
                 bodyToMono(Person.class).block();
 
         String charactersHomeworldUri = person.getHomeworld();

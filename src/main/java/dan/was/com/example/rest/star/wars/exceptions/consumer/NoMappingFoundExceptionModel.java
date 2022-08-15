@@ -1,4 +1,4 @@
-package dan.was.com.example.rest.star.wars.exceptions;
+package dan.was.com.example.rest.star.wars.exceptions.consumer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotFoundExceptionModel {
+public class NoMappingFoundExceptionModel {
     private String status;
     private String cause;
     private String [] api_handled_uri;
