@@ -1,7 +1,11 @@
 package dan.was.com.example.rest.star.wars.controller;
 
 
-import dan.was.com.example.rest.star.wars.exceptions.OutOfBoundException;
+import dan.was.com.example.rest.star.wars.exceptions.consumer.RemoteServerInternalErrorResponse;
+import dan.was.com.example.rest.star.wars.exceptions.consumer.UnknownExceptionResponse;
+import dan.was.com.example.rest.star.wars.exceptions.remote.InternalErrorException;
+import dan.was.com.example.rest.star.wars.exceptions.remote.ResourceNotFoundExceptions;
+import dan.was.com.example.rest.star.wars.exceptions.consumer.NotFoundExceptionResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.PersonsListResponse;
 import dan.was.com.example.rest.star.wars.responsemodel.RestResponse;
@@ -26,7 +30,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RequiredArgsConstructor
 @RestController
 public class CharacterController {
-    private static Logger LOGGER = LogManager.getLogger(CharacterController.class);
+    private static final Logger LOGGER = LogManager.getLogger(CharacterController.class);
 
     @Autowired
     private ConvertPersonDataService convertPersonData;
@@ -35,17 +39,19 @@ public class CharacterController {
 
 
     @GetMapping("/characters")
-    public EntityModel<RestResponse> getAllCharactersFromPage(@RequestParam(value = "page", defaultValue = "1") int page) throws OutOfBoundException {
+    public EntityModel<RestResponse> getAllCharactersFromPage(@RequestParam(value = "page", defaultValue = "1") int page) throws NotFoundExceptionResponse {
+
         EntityModel<RestResponse> model;
         PersonsListResponse personsListResponse = new PersonsListResponse();
         try {
             personsListResponse = convertToPersonsListService.convertToPersonsListResponse(page);
             model = EntityModel.of(personsListResponse);
+        } catch (ResourceNotFoundExceptions e) {
+            throw new NotFoundExceptionResponse(e.getMessage());
+        } catch (InternalErrorException e) {
+            throw new RemoteServerInternalErrorResponse(e.getMessage());
         } catch (Exception e) {
-            RestResponse restResponse = new RestResponse();
-            restResponse.setMessage(e.getMessage());
-            model = EntityModel.of(restResponse);
-            return model;
+            throw new UnknownExceptionResponse(e.getMessage());
         }
         WebMvcLinkBuilder linkToCharacters
                 = linkTo(methodOn(this.getClass()).getAllCharactersFromPage(page));
@@ -60,11 +66,12 @@ public class CharacterController {
         try {
             PersonResponse personResponse = convertPersonData.convertPerson(id);
             model = EntityModel.of(personResponse);
+        } catch (ResourceNotFoundExceptions e) {
+            throw new NotFoundExceptionResponse(e.getMessage());
+        } catch (InternalErrorException e) {
+            throw new RemoteServerInternalErrorResponse(e.getMessage());
         } catch (Exception e) {
-            RestResponse restResponse = new RestResponse();
-            restResponse.setMessage(e.getMessage());
-            model = EntityModel.of(restResponse);
-            return model;
+            throw new UnknownExceptionResponse(e.getMessage());
         }
         WebMvcLinkBuilder linkToCharacter =
                 linkTo(methodOn(this.getClass()).getCharacterById(id));
