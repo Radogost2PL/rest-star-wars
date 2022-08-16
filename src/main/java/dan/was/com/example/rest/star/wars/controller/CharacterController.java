@@ -79,5 +79,4 @@ public class CharacterController {
         model.add(linkToCharacter.withRel("character-by-id"));
         return model;
     }
-
 }
