@@ -41,8 +41,8 @@ public class ConvertPersonDataService {
                 get().
                 uri(planetUri).
                 retrieve().
-                onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new RuntimeException("Resource not found"))).
-                onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new RuntimeException("Server is dead"))).
+                onStatus(HttpStatus::is4xxClientError, error -> Mono.error(new ResourceNotFoundExceptions("Remote resource not found"))).
+                onStatus(HttpStatus::is5xxServerError, error -> Mono.error(new InternalErrorException("Remote server internal error"))).
                 bodyToMono(Planet.class).
                 block()));
     }
