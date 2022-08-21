@@ -23,8 +23,7 @@ public class ExceptionResolver {
     @Value("${example.valid.uri.character}")
     private String urlCharacter;
 
-
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler(org.springframework.web.servlet.NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public NoMappingFoundExceptionModel noHandlerFoundException(NoHandlerFoundException e, WebRequest request) {
